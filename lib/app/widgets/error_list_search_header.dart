@@ -11,7 +11,7 @@ class ErrorListHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesListBloc, MoviesListState>(
       builder: (BuildContext context, MoviesListState state) {
-        bool isEmpty = state.moviesList.isEmpty;
+        bool isEmpty = state.moviesList.Search.isEmpty;
         bool isFailure = state.status == MoviesListStatus.failure;
         return SliverVisibility(
           visible: isEmpty || isFailure,

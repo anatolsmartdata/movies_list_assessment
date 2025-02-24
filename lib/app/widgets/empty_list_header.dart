@@ -11,7 +11,7 @@ class EmptyListHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesListBloc, MoviesListState>(
       builder: (BuildContext context, MoviesListState state) {
-        bool isEmpty = state.moviesList.isEmpty;
+        bool isEmpty = state.moviesList.Search.isEmpty;
         return SliverVisibility(
           visible: isEmpty,
           sliver: SliverToBoxAdapter(
