@@ -9,7 +9,7 @@ class SuccessSearchHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesListBloc, MoviesListState>(
       builder: (BuildContext context, MoviesListState state) {
-        bool isNotEmpty =  state.moviesList.isNotEmpty;
+        bool isNotEmpty =  state.moviesList.Search.isNotEmpty;
         bool isSuccess = state.status == MoviesListStatus.success;
         String total = state.moviesList.totalResults;
         return SliverVisibility(

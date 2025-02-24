@@ -12,7 +12,7 @@ class EmptySearchHeader extends StatelessWidget {
     return BlocBuilder<MoviesListBloc, MoviesListState>(
       builder: (BuildContext context, MoviesListState state) {
         bool isInitial = state.status == MoviesListStatus.initial;
-        bool isEmpty = state.moviesList.isEmpty;
+        bool isEmpty = state.moviesList.Search.isEmpty;
         return SliverVisibility(
           visible: isEmpty || isInitial,
           sliver: SliverToBoxAdapter(
