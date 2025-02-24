@@ -3,8 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies_explorer/app/infrastrucutre/bloc/details-bloc/details_bloc.dart';
 import 'package:movies_explorer/app/infrastrucutre/models/models.dart';
+import 'package:movies_explorer/styles/text_styles.dart';
 
 import '../infrastrucutre/models/rating_dto.dart';
+
+String metaCritic = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Metacritic_logo_original.svg/1200px-Metacritic_logo_original.svg.png';
+String rotLogo = 'https://static.wikia.nocookie.net/jhmovie/images/6/6f/Rotten_Tomatoes_logo.svg/revision/latest/scale-to-width-down/691?cb=20211201133613';
+String imdbLogo = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/2560px-IMDB_Logo_2016.svg.png';
+
 
 class MovieDetails extends StatefulWidget {
 
@@ -40,7 +46,9 @@ class _MovieDetailsState extends State<MovieDetails> {
     if (ratingList != null) {
       if (ratingList.isNotEmpty) {
         return ratingList.map((RatingDto ratingElement) {
-          return circularProgressFor(progress: ratingElement.Value?.replaceFirst("%","/100"), text: ratingElement.Source);
+          return circularProgressFor(
+              progress: ratingElement.Value?.replaceFirst("%","/100"),
+              text: ratingElement.Source);
         });
       }
     }
@@ -54,10 +62,6 @@ class _MovieDetailsState extends State<MovieDetails> {
     double totalSize = MediaQuery.sizeOf(context).width - 24 - 60;
     var value = percentage / totalPercentage;
     var size = totalSize / 3;
-    String metaCritic = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Metacritic_logo_original.svg/1200px-Metacritic_logo_original.svg.png';
-    String rotLogo = 'https://static.wikia.nocookie.net/jhmovie/images/6/6f/Rotten_Tomatoes_logo.svg/revision/latest/scale-to-width-down/691?cb=20211201133613';
-    String imdbLogo = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/2560px-IMDB_Logo_2016.svg.png';
-
     text ??= '$percentage%';
 
     return Stack(
@@ -70,7 +74,9 @@ class _MovieDetailsState extends State<MovieDetails> {
             child: CircularProgressIndicator(
               backgroundColor: Colors.grey.withValues(alpha: .3),
               strokeWidth: 8,
-              color: text.contains('Rotten') ? Colors.red : text.contains('Metacritic') ? Colors.blue : Color.fromRGBO(245, 197, 24, 1),
+              color: text.contains('Rotten') ? Colors.red :
+              text.contains('Metacritic') ? Colors.blue :
+              Color.fromRGBO(245, 197, 24, 1),
               value: value,
             ),
           ),
@@ -78,7 +84,13 @@ class _MovieDetailsState extends State<MovieDetails> {
         Center(
           child: Column(
             children: [
-              Image.network(width: size/2, height: size/2,text.contains('Rotten') ? rotLogo : text.contains('Metacritic') ? metaCritic : imdbLogo, fit: BoxFit.contain,),
+              Image.network(
+                width: size / 2,
+                height: size / 2,
+                text.contains('Rotten') ? rotLogo :
+                text.contains('Metacritic') ? metaCritic :
+                imdbLogo,
+                fit: BoxFit.contain,),
               Text(progress)
             ],
           ),
@@ -102,7 +114,8 @@ class _MovieDetailsState extends State<MovieDetails> {
               centerTitle: false,
               leading: InkWell(
                 onTap: () => context.pop(),
-                child: Icon(Icons.arrow_back, color: Colors.white),
+                child: Icon(Icons.arrow_back,
+                    color: Colors.white),
               ),
               leadingWidth: 40,
               title: Padding(
@@ -110,14 +123,16 @@ class _MovieDetailsState extends State<MovieDetails> {
                 child: Text(
                   title,
                   maxLines: 2,
-                  style: TextStyle(fontFamily: 'Montserrat', fontSize: 18, color: Colors.white),),
+                  style: TextStyle().detailsTitle),
               )
             ),
             body: SizedBox(
               width: double.maxFinite,
               height: double.maxFinite,
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                padding: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 12),
                 child: state is MovieDetailsLoading ?
                 Column(
                   mainAxisSize: MainAxisSize.max,
@@ -145,11 +160,19 @@ class _MovieDetailsState extends State<MovieDetails> {
                       margin: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          image: state.movieDetails.Poster! == 'N/A' ? null : DecorationImage(image: NetworkImage(state.movieDetails.Poster!), fit: BoxFit.cover)
+                          image: state.movieDetails.Poster! == 'N/A' ?
+                          null :
+                          DecorationImage(
+                              image: NetworkImage(
+                                  state.movieDetails.Poster!),
+                              fit: BoxFit.cover)
                       ),
                       child: state.movieDetails.Poster! == 'N/A' ? Container(
-                        decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(10)),
-                        child: Icon(Icons.movie_creation_outlined, color: Colors.white, size: 150,),
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Icon(Icons.movie_creation_outlined,
+                          color: Colors.white, size: 150,),
                       ) : null,
                     ),
                     Row(
@@ -159,34 +182,45 @@ class _MovieDetailsState extends State<MovieDetails> {
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 20, bottom: 20, left: 3),
+                      padding: EdgeInsets.only(
+                          top: 20,
+                          bottom: 20,
+                          left: 3),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: (contentWidth-3) / 2,
+                            width: (contentWidth - 3) / 2,
                             decoration: BoxDecoration(
                                 border: Border(left: BorderSide(width: .5))
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text('Year: ', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.grey)),
-                                Text(state.movieDetails.Year, style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                                Text('Year: ',
+                                    style: TextStyle().detLabelGrey),
+                                Text(state.movieDetails.Year,
+                                    style: TextStyle().detValBlack),
                               ],
                             ),
                           ),
                           Container(
                             width: (contentWidth-3)/2,
                             decoration: BoxDecoration(
-                              border: Border(right: BorderSide(width: .5), left: BorderSide(width: .5))
+                              border: Border(
+                                  right: BorderSide(width: .5),
+                                  left: BorderSide(width: .5))
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text('Country: ', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.grey)),
-                                Text(state.movieDetails.Country ?? '', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                                Text('Country: ',
+                                    style: TextStyle().detLabelGrey),
+                                Text(state.movieDetails.Country ?? '',
+                                  style: TextStyle().detValBlack,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,),
                               ],
                             ),
                           ),
@@ -199,11 +233,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                         children: [
                           SizedBox(
                             width: labelWidth,
-                            child: Text('Genre: ', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black.withValues(alpha: .8), height: 0.6)),
+                            child: Text('Genre: ',
+                                style: TextStyle().detTableLab),
                           ),
                           SizedBox(
                             width: valWidth,
-                            child: Text(state.movieDetails.Genre ?? '', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                            child: Text(state.movieDetails.Genre ?? '',
+                                style: TextStyle().detValBlack),
                           ),
                         ],
                       ),
@@ -214,11 +250,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                         children: [
                           SizedBox(
                             width: labelWidth,
-                            child: Text('Director: ', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black.withValues(alpha: .8), height: 0.6)),
+                            child: Text('Director: ',
+                                style: TextStyle().detTableLab),
                           ),
                           SizedBox(
                             width: valWidth,
-                            child: Text(state.movieDetails.Director ?? '', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                            child: Text(state.movieDetails.Director ?? '',
+                                style: TextStyle().detValBlack),
                           ),
                         ],
                       ),
@@ -229,11 +267,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                         children: [
                           SizedBox(
                             width: labelWidth,
-                            child: Text('Writer: ', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black.withValues(alpha: .8), height: 0.6)),
+                            child: Text('Writer: ',
+                                style: TextStyle().detTableLab),
                           ),
                           SizedBox(
                             width: valWidth,
-                            child: Text(state.movieDetails.Writer ?? '', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                            child: Text(state.movieDetails.Writer ?? '',
+                                style: TextStyle().detValBlack),
                           ),
                         ],
                       ),
@@ -244,11 +284,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                         children: [
                           SizedBox(
                             width: labelWidth,
-                            child: Text('Duration: ', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black.withValues(alpha: .8), height: 0.6)),
+                            child: Text('Duration: ',
+                                style: TextStyle().detTableLab),
                           ),
                           SizedBox(
                             width: valWidth,
-                            child: Text(state.movieDetails.Runtime ?? '', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                            child: Text(state.movieDetails.Runtime,
+                                style: TextStyle().detValBlack),
                           ),
                         ],
                       ),
@@ -259,18 +301,26 @@ class _MovieDetailsState extends State<MovieDetails> {
                         children: [
                           SizedBox(
                             width: labelWidth,
-                            child: Text('Language: ', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black.withValues(alpha: .8), height: 0.6)),
+                            child: Text('Language: ',
+                                style: TextStyle().detTableLab),
                           ),
                           SizedBox(
                             width: valWidth,
-                            child: Text(state.movieDetails.Language ?? '', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                            child: Text(state.movieDetails.Language ?? '',
+                                style: TextStyle().detValBlack),
                           ),
                         ],
                       ),
                     ),
-                    ToggleBox(title: 'Description',content: state.movieDetails.Plot ?? ''),
-                    ToggleBox(title: 'Actors',content: state.movieDetails.Actors ?? ''),
-                    ToggleBox(title: 'Awards',content: state.movieDetails.Awards ?? ''),
+                    ToggleBox(
+                        title: 'Description',
+                        content: state.movieDetails.Plot ?? ''),
+                    ToggleBox(
+                        title: 'Actors',
+                        content: state.movieDetails.Actors ?? ''),
+                    ToggleBox(
+                        title: 'Awards',
+                        content: state.movieDetails.Awards ?? ''),
                   ]
                 ) :
                 Column(
@@ -326,7 +376,9 @@ class _ToggleBox extends State<ToggleBox> {
       margin: EdgeInsets.symmetric(vertical: 7),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(width: .6, color: Colors.grey.withAlpha(100))
+          border: Border.all(
+              width: .6,
+              color: Colors.grey.withAlpha(100))
       ),
       child: Column(
         children: [
@@ -359,7 +411,8 @@ class _ToggleBox extends State<ToggleBox> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(widget.title),
-                      Icon(isOpen ? Icons.arrow_drop_down : Icons.arrow_right, color: Colors.black54,)
+                      Icon(isOpen ? Icons.arrow_drop_down : Icons.arrow_right,
+                        color: Colors.black54,)
                     ],
                   ),
                 ),
@@ -373,10 +426,12 @@ class _ToggleBox extends State<ToggleBox> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 10),
                 child: Text(
                   widget.content,
-                  style: widget.contentStyle ?? TextStyle(fontSize: 14, color: Colors.black.withAlpha(180)),),
+                  style: widget.contentStyle ?? TextStyle().detToggleContent),
               ),
             )
           ]
