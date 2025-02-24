@@ -1,10 +1,5 @@
 sealed class MoviesListEvent {}
 
-final class FetchMoviesList extends MoviesListEvent {
-  final int page;
-  FetchMoviesList(this.page);
-}
-
 final class SearchMoviesEvt extends MoviesListEvent {
   final String searchString;
   final int page;

@@ -7,7 +7,6 @@ import 'list_bloc.dart';
 
 class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
   MoviesListBloc() : super(MoviesListState()) {
-    on<FetchMoviesList>(fetchMoviesList);
     on<SetListLoading>(setLoading);
     on<SearchMoviesEvt>(searchMovies);
     on<FetchSavedMovies>(fetchSavedMovies);
@@ -62,9 +61,6 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
     emit(state.copyWith(
       status: MoviesListStatus.loading
     ));
-  }
-
-  fetchMoviesList(MoviesListEvent event, Emitter<MoviesListState> emit) async {
   }
 
   fetchSavedMovies(MoviesListEvent event, Emitter<MoviesListState> emit) async {
