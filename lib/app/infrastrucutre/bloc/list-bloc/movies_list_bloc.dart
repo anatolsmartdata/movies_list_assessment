@@ -71,7 +71,6 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
     if (event is FetchSavedMovies) {
       MoviesListModel? movies = await storage.getSavedMoviesList(event.page);
       List moviesList = movies != null ? movies.Search : [];
-      print(moviesList);
       emit(
           state.copyWith(
               status: MoviesListStatus.success,
@@ -90,22 +89,36 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
 
   searchSavedMovies(MoviesListEvent event, Emitter<MoviesListState> emit) async {
     if (event is SearchSavedMovies) {
-      MoviesListModel? movies = await storage.filterSavedMoviesList(event.searchString, event.page);
-      List moviesList = movies != null && movies.isNotEmpty ? movies.Search : List.from([]);
-      List existingList = event.isNewSearch ? [] : state.savedList.Search;
-      emit(
+      try {
+        MoviesListModel? movies = await storage.filterSavedMoviesList(event.searchString, event.page);
+        List moviesList = movies != null && movies.isNotEmpty ?
+        movies.Search : List.from([]);
+        List existingList = event.isNewSearch ? [] : state.savedList.Search;
+        bool allEmpty = existingList.isEmpty && moviesList.isEmpty;
+        bool noFound = allEmpty && event.searchString.isNotEmpty;
+        MoviesListStatus status = noFound ?
+        MoviesListStatus.failure : MoviesListStatus.success;
+        emit(
+            state.copyWith(
+                status: status,
+                savedList: state.savedList.copyWith(
+                    Response: '',
+                    totalResults: movies?.totalResults,
+                    Search: [
+                      ...existingList,
+                      ...moviesList
+                    ]
+                )
+            )
+        );
+      }
+      catch(_) {
+        emit(
           state.copyWith(
-              status: MoviesListStatus.success,
-              savedList: state.savedList.copyWith(
-                  Response: '',
-                  totalResults: movies?.totalResults,
-                  Search: [
-                    ...existingList,
-                    ...moviesList
-                  ]
-              )
+            status: MoviesListStatus.failure
           )
-      );
+        );
+      }
     }
   }
 }
