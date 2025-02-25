@@ -10,7 +10,7 @@ class SuccessListHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MoviesListBloc, MoviesListState>(
       builder: (BuildContext context, MoviesListState state) {
-        bool isNotEmpty =  state.moviesList.Search.isNotEmpty;
+        bool isNotEmpty =  state.savedList.Search.isNotEmpty;
         return SliverVisibility(
           visible: isNotEmpty,
           sliver: SliverAppBar(
