@@ -59,12 +59,24 @@ class SearchMoviesState extends State<SearchMovies> {
     return currentScroll >= (maxScroll * 0.9);
   }
 
+  clearSearch() {
+    searchController.clear();
+    setState(() {
+      searchStr = '';
+      page = 1;
+      debounceTimer = null;
+    });
+    moviesBloc.add(ClearSearchedMovies());
+  }
+
   PreferredSizeWidget appBar() {
     return AppBar(
       backgroundColor: Colors.blueAccent,
       title: HeaderSearchInput(
         controller: searchController,
         hintText: 'Search movies',
+        suffixActive: searchStr.length > 2,
+        onClearTap: clearSearch,
         onChanged: (String searchString) {
           setState(() {
             searchStr = searchString;
