@@ -12,12 +12,13 @@ class SuccessSearchHeader extends StatelessWidget {
         bool isNotEmpty =  state.moviesList.Search.isNotEmpty;
         bool isSuccess = state.status == MoviesListStatus.success;
         String total = state.moviesList.totalResults;
+        String len = state.moviesList.Search.length.toString();
         return SliverVisibility(
           visible: isNotEmpty && isSuccess,
           sliver: SliverAppBar(
             leadingWidth: double.maxFinite,
             automaticallyImplyLeading: true,
-            title: Text('Search results: ($total)'),
+            title: Text('Search results: ($len/$total)'),
             centerTitle: false,
           ),
         );
