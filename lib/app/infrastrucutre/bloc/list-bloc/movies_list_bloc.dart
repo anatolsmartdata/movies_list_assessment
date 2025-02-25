@@ -9,6 +9,7 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
   MoviesListBloc() : super(MoviesListState()) {
     on<SetListLoading>(setLoading);
     on<SearchMoviesEvt>(searchMovies);
+    on<ClearSearchedMovies>(clearSearchedMovies);
     on<FetchSavedMovies>(fetchSavedMovies);
     on<SearchSavedMovies>(searchSavedMovies);
   }
@@ -55,6 +56,19 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
         }
       }
     }
+  }
+
+  clearSearchedMovies(MoviesListEvent event, Emitter<MoviesListState> emit) {
+    emit(
+      state.copyWith(
+        status: MoviesListStatus.initial,
+        moviesList: state.moviesList.copyWith(
+          Response: '',
+          totalResults: '',
+          Search: []
+        )
+      )
+    );
   }
 
   setLoading(MoviesListEvent event, Emitter<MoviesListState> emit) async {
