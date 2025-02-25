@@ -8,6 +8,8 @@ final class SearchMoviesEvt extends MoviesListEvent {
   SearchMoviesEvt(this.searchString, this.page, this.isNewSearch);
 }
 
+final class ClearSearchedMovies extends MoviesListEvent {}
+
 final class FetchSavedMovies extends MoviesListEvent {
   final int page;
 
