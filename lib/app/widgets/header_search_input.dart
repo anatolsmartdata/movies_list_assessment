@@ -7,15 +7,20 @@ class HeaderSearchInput extends StatelessWidget {
     this.onChanged,
     this.icon,
     this.controller,
+    this.suffixActive,
+    this.onClearTap,
   });
 
   final String? hintText;
+  final bool? suffixActive;
   final Function(String)? onChanged;
+  final Function()? onClearTap;
   final IconData? icon;
   final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
+    bool hasSuffix = suffixActive != null && suffixActive == true;
     return Padding(
       padding: EdgeInsets.only(bottom: 10),
       child: TextField(
@@ -36,6 +41,15 @@ class HeaderSearchInput extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
+          suffixIcon: hasSuffix ?
+          InkWell(
+            onTap: onClearTap ?? () {},
+            child: Icon(
+              icon ?? Icons.cancel,
+              color: Colors.black.withValues(alpha: 0.5),
+            ),
+          ) :
+          null,
           hintText: hintText ?? 'Search movies',
           hintStyle:TextStyle(
               color: Colors.black87,
