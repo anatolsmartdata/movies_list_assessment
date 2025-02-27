@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:movies_explorer/app/infrastrucutre/services/movies-service/movies_service.dart';
 import 'package:movies_explorer/app/infrastrucutre/storage/movies_storage.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 import '../../models/models.dart';
 import 'list_bloc.dart';
@@ -8,7 +10,10 @@ import 'list_bloc.dart';
 class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
   MoviesListBloc() : super(MoviesListState()) {
     on<SetListLoading>(setLoading);
-    on<SearchMoviesEvt>(searchMovies);
+    on<SearchMoviesEvt>(
+        searchMovies,
+        transformer: debouncerFunc(const Duration(milliseconds: 400))
+    );
     on<ClearSearchedMovies>(clearSearchedMovies);
     on<FetchSavedMovies>(fetchSavedMovies);
     on<SearchSavedMovies>(searchSavedMovies);
@@ -16,12 +21,19 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
 
   MoviesStorage get storage => MoviesStorage();
 
+  EventTransformer<E> debouncerFunc<E>(Duration duration) {
+    return (events, mapper) {
+      return droppable<E>().call(events.throttle(duration), mapper);
+    };
+  }
+
   searchMovies(MoviesListEvent event, Emitter<MoviesListState> emit) async {
     if (event is SearchMoviesEvt) {
       String searchString = event.searchString;
       int page = event.page;
       int? total = int.tryParse(state.moviesList.totalResults) ?? 0;
       if (page * 10 < total || state.status == MoviesListStatus.initial) {
+        setLoading(event, emit);
         final moviesService = MoviesService();
         dynamic searchResults = await moviesService.searchMovies(searchString, page);
         if (searchResults != null) {
@@ -71,14 +83,17 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
     );
   }
 
-  setLoading(MoviesListEvent event, Emitter<MoviesListState> emit) async {
+  setLoading(MoviesListEvent event, Emitter<MoviesListState> emit) {
     emit(state.copyWith(
-      status: MoviesListStatus.loading
+      status: MoviesListStatus.loading,
+      moviesList: state.moviesList,
+      savedList: state.savedList
     ));
   }
 
   fetchSavedMovies(MoviesListEvent event, Emitter<MoviesListState> emit) async {
     if (event is FetchSavedMovies) {
+      setLoading(event, emit);
       MoviesListModel? movies = await storage.getSavedMoviesList(event.page);
       List moviesList = movies != null ? movies.Search : [];
       emit(
@@ -99,6 +114,7 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState> {
 
   searchSavedMovies(MoviesListEvent event, Emitter<MoviesListState> emit) async {
     if (event is SearchSavedMovies) {
+      setLoading(event, emit);
       try {
         MoviesListModel? movies = await storage.filterSavedMoviesList(event.searchString, event.page);
         List moviesList = movies != null && movies.isNotEmpty ?

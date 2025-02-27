@@ -23,7 +23,6 @@ class SearchMoviesState extends State<SearchMovies> {
   final scrollController = ScrollController();
   int page = 1;
   String searchStr = '';
-  Timer? debounceTimer;
   TextEditingController searchController = TextEditingController();
 
   MoviesListBloc get moviesBloc => context.read<MoviesListBloc>();
@@ -37,7 +36,6 @@ class SearchMoviesState extends State<SearchMovies> {
   @override
   void dispose() {
     scrollController.dispose();
-    debounceTimer?.cancel();
     searchController.clear();
     searchController.dispose();
     super.dispose();
@@ -64,7 +62,6 @@ class SearchMoviesState extends State<SearchMovies> {
     setState(() {
       searchStr = '';
       page = 1;
-      debounceTimer = null;
     });
     moviesBloc.add(ClearSearchedMovies());
   }
@@ -81,12 +78,9 @@ class SearchMoviesState extends State<SearchMovies> {
           setState(() {
             searchStr = searchString;
           });
-          if (debounceTimer != null) debounceTimer!.cancel();
-          debounceTimer = Timer(Duration(milliseconds: 600), () {
-            if (searchStr.length > 2) {
-              moviesBloc.add(SearchMoviesEvt(searchStr, page, true));
-            }
-          });
+          if (searchStr.length > 2) {
+            moviesBloc.add(SearchMoviesEvt(searchStr, page, true));
+          }
         },
       ),
     );
